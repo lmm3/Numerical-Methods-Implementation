@@ -5,6 +5,7 @@ y, t, x = symbols('y t x');
 vt = []
 vy = []
 fn = []
+pc = []
 
 def print_solution(method, h):
     write_file = open('saida.txt', 'a')
@@ -16,11 +17,12 @@ def print_solution(method, h):
     write_file.write('\n')
     write_file.close()
 
-def print_graph():
+def print_graph(graphName):
     plt.plot(vt, vy)
-    plt.ylabel('y values')
-    plt.xlabel('t values')
-    plt.show()
+    plt.ylabel('i1(A)')
+    plt.xlabel('t(min)')
+    plt.savefig('Images/' + graphName)
+    plt.close()
 
 def solveFor(yn, tn, expr):
     return expr.subs([(y,yn), (t,tn)])
@@ -187,19 +189,23 @@ def main():
                 euler_method(y0, t0, h, n, expr)
                 print_solution('Euler', h)
                 plt.title('Metodo de Euler')
+                method_str = 'Metodo de Euler'
             elif input_str[0] == 'euler_inverso':
                 backward_euler_method(y0, t0, h, n, expr)
                 print_solution('Euler Inverso', h)
                 plt.title('Metodo de Euler Inverso')
+                method_str = 'Metodo de Euler Inverso'
             elif input_str[0] == 'euler_aprimorado':
                 improved_euler_method(y0, t0, h, n, expr)
                 print_solution('Euler Aprimorado', h)
                 plt.title('Metodo de Euler Aprimorado')
+                method_str = 'Metodo de Euler Aprimorado'
             elif input_str[0] == 'runge_kutta':
                 runge_kutta_method(y0, t0, h, n, expr)
                 print_solution('Runge Kutta', h)
                 plt.title('Metodo de Runge-Kutta')
-            print_graph()
+                method_str = 'Metodo de Runge-Kutta'
+            print_graph(method_str)
         elif input_str[0] == 'adam_bashforth':
             str_order = input_str[len(input_str)-1].split('\n')
             order = int(str_order[0])
@@ -216,7 +222,8 @@ def main():
             adam_bashforth_method(y0, t0, h, n, expr, order)
             print_solution(('Adam Bashforth de ' + str(order) + ' ordem'), h) 
             plt.title('Adam Bashforth de ' + str(order) + ' ordem')
-            print_graph()
+            method_str = 'Adam Bashforth de ' + str(order) + ' ordem'
+            print_graph(method_str)
         elif input_str[0] == 'adam_multon':
             str_order = input_str[len(input_str)-1].split('\n')
             order = int(str_order[0])
@@ -233,7 +240,8 @@ def main():
             adam_multon_method(y0, t0, h, n, expr, order)
             print_solution(('Adam Multon de ' + str(order) + ' ordem'), h)
             plt.title('Adam Multon de ' + str(order) + ' ordem')
-            print_graph()
+            method_str = 'Adam Multon de ' + str(order) + ' ordem'
+            print_graph(method_str)
         elif input_str[0] == 'formula_inversa':
             str_order = input_str[len(input_str)-1].split('\n')
             order = int(str_order[0])
@@ -250,7 +258,8 @@ def main():
             backward_formula_method(y0, t0, h, n, expr, order)
             print_solution(('Formula Inversa de Diferenciacao de ' + str(order) + ' ordem'), h)
             plt.title('Formula Inversa de Diferenciacao de ' + str(order) + ' ordem')
-            print_graph()
+            method_str = 'Formula Inversa de Diferenciacao de ' + str(order) + ' ordem'
+            print_graph(method_str)
         elif input_str[0] == 'adam_bashforth_by_euler' or input_str[0] == 'adam_bashforth_by_euler_inverso' or input_str[0] == 'adam_bashforth_by_euler_aprimorado' or input_str[0] == 'adam_bashforth_by_runge_kutta':
             y0 = float(input_str[1])
             t0 = float(input_str[2])
@@ -276,7 +285,7 @@ def main():
             adam_bashforth_method(y0, t0, h, n, expr, order)
             print_solution(method_str, h)
             plt.title(method_str)
-            print_graph()
+            print_graph(method_str)
         elif input_str[0] == 'adam_multon_by_euler' or input_str[0] == 'adam_multon_by_euler_inverso' or input_str[0] == 'adam_multon_by_euler_aprimorado' or input_str[0] == 'adam_multon_by_runge_kutta':
             y0 = float(input_str[1])
             t0 = float(input_str[2])
@@ -302,7 +311,7 @@ def main():
             adam_multon_method(y0, t0, h, n, expr, order)
             print_solution(method_str, h)
             plt.title(method_str)
-            print_graph()
+            print_graph(method_str)
         elif input_str[0] == 'formula_inversa_by_euler' or input_str[0] == 'formula_inversa_by_euler_inverso' or input_str[0] == 'formula_inversa_by_euler_aprimorado' or input_str[0] == 'formula_inversa_by_runge_kutta':
             y0 = float(input_str[1])
             t0 = float(input_str[2])
@@ -328,8 +337,13 @@ def main():
             backward_formula_method(y0, t0, h, n, expr, order)
             print_solution(method_str, h)
             plt.title(method_str)
-            print_graph()
+            print_graph(method_str)
+        pc.append(vy[500])
     read_file.close()
-        
+    f = open('comparison.txt', 'w')
+    for i in pc:
+        f.write(str(i) + '\n')
+    f.close()
+
 if __name__ == "__main__":
     main()
